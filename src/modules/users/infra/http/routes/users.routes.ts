@@ -12,9 +12,9 @@ const usersController = new UsersController();
 const userAvatarController = new UserAvatarController();
 const upload = multer(uploadConfig.multer);
 
+// ensureAuthenticated,
 usersRouter.post(
   '/',
-  ensureAuthenticated,
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().required(),

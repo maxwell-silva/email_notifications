@@ -42,7 +42,7 @@ export default {
   config: {
     disk: {},
     aws: {
-      bucket: 'maxwellsilva.app-gobarber',
+      bucket: 'maxwellsilva.app-email-notification',
     },
   },
 } as IUploadConfig;

@@ -10,8 +10,8 @@ import AppError from '@shared/errors/AppError';
 import rateLimiter from './middlewares/RateLimiter';
 import routes from './routes';
 
-import '@shared/infra/typeorm';
 import '@shared/container';
+import '@shared/infra/typeorm';
 
 const app = express();
 
