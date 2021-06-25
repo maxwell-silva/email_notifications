@@ -14,6 +14,7 @@ subscriptionRouter.post(
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().required(),
+      lastName: Joi.string(),
       email: Joi.string().email().required(),
     },
   }),
@@ -33,7 +34,8 @@ subscriptionRouter.post(
   '/leave',
   celebrate({
     [Segments.BODY]: {
-      token: Joi.string().uuid().required(),
+      distribution_id: Joi.string().uuid().required(),
+      subscriber_id: Joi.string().uuid().required(),
     },
   }),
   leaveSubscriptionController.create,

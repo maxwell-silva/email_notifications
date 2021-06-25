@@ -5,7 +5,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import DistributionContacts from './DistributionContact';
 
 @Entity('subscribers')
 class Subscriber {
@@ -29,6 +31,15 @@ class Subscriber {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(
+    () => DistributionContacts,
+    distributionContact => distributionContact.subscriber_id,
+    {
+      cascade: true,
+    },
+  )
+  distributions: DistributionContacts[];
 }
 
 export default Subscriber;

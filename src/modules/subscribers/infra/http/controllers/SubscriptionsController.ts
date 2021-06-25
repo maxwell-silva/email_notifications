@@ -4,12 +4,13 @@ import JoinSubscriptionService from '@modules/subscribers/services/JoinSubscript
 
 export default class SubscriptionsController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, email } = request.body;
+    const { name, lastName, email } = request.body;
 
     const joinSubscriptionService = container.resolve(JoinSubscriptionService);
 
     await joinSubscriptionService.execute({
       name,
+      lastName,
       email,
     });
 

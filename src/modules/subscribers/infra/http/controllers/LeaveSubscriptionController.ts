@@ -4,14 +4,15 @@ import LeaveSubscriptionService from '@modules/subscribers/services/LeaveSubscri
 
 export default class LeaveSubscriptionController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { token } = request.body;
+    const { subscriber_id, distribution_id } = request.body;
 
     const leaveSubscriptionService = container.resolve(
       LeaveSubscriptionService,
     );
 
     await leaveSubscriptionService.execute({
-      id: token,
+      subscriber_id,
+      distribution_id,
     });
 
     return response.status(204).json();

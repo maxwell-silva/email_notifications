@@ -1,9 +1,9 @@
-import { getRepository, Repository } from 'typeorm';
 import ICreateSubscriberDTO from '@modules/subscribers/dtos/ICreateSubscriberDTO';
-import Subscriber from '../entities/Subscriber';
+import { getRepository, Repository } from 'typeorm';
 import ISubscriberRepository from '../../../repositories/ISubscriberRepository';
+import Subscriber from '../entities/Subscriber';
 
-class SubscribersRepository implements ISubscriberRepository {
+class SubscriberRepository implements ISubscriberRepository {
   private ormRepository: Repository<Subscriber>;
 
   constructor() {
@@ -17,9 +17,7 @@ class SubscribersRepository implements ISubscriberRepository {
   }
 
   public async findByEmail(email: string): Promise<Subscriber | undefined> {
-    const subscriber = await this.ormRepository.findOne({
-      where: { email },
-    });
+    const subscriber = await this.ormRepository.findOne(email);
 
     return subscriber;
   }
@@ -28,14 +26,25 @@ class SubscribersRepository implements ISubscriberRepository {
     subscription_status: boolean,
   ): Promise<Subscriber[]> {
     const subscribers = await this.ormRepository.find({
-      where: { subscription_status },
+      where: {
+        subscription_status,
+      },
     });
 
     return subscribers;
   }
 
-  public async create(userData: ICreateSubscriberDTO): Promise<Subscriber> {
-    const subscriber = this.ormRepository.create(userData);
+  public async create({
+    name,
+    lastName,
+    email,
+  }: ICreateSubscriberDTO): Promise<Subscriber> {
+    const subscriber = this.ormRepository.create({
+      name,
+      email,
+      last_name: lastName,
+      subscription_status: true,
+    });
 
     await this.ormRepository.save(subscriber);
 
@@ -47,4 +56,4 @@ class SubscribersRepository implements ISubscriberRepository {
   }
 }
 
-export default SubscribersRepository;
+export default SubscriberRepository;

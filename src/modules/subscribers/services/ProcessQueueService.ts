@@ -4,6 +4,8 @@ import { IMessageJob } from '@shared/container/providers/MailProvider/dtos/ISend
 import path from 'path';
 
 import IQueueProvider from '@shared/container/providers/QueueProvider/models/IQueueProvider';
+import AppError from '@shared/errors/AppError';
+import IDistributionContactRepository from '../repositories/IDistributionContactRepository';
 
 @injectable()
 export default class ProcessQueueService {
@@ -13,15 +15,33 @@ export default class ProcessQueueService {
 
     @inject('MailProvider')
     private mailProvider: IMailProvider,
+
+    @inject('DistributionContactRepository')
+    private distributionContactRepository: IDistributionContactRepository,
   ) {}
 
   execute(): void {
-    /**
-     * implementar garantia de que usuário ainda não recebeu email desta lista de distribuição
-     */
     this.queueProvider.process(async job => {
       const { contact, distributionId } = job.data as IMessageJob;
-      const id = distributionId || `asdasdasd`;
+      const { email } = contact;
+
+      const distributionContact = await this.distributionContactRepository.findByEmailAndDistribution(
+        email,
+        distributionId,
+      );
+
+      if (!distributionContact) {
+        throw new AppError('No Exists');
+      }
+      const {
+        delivery_status,
+        delivery_failure,
+        unsubscription,
+      } = distributionContact;
+
+      if (delivery_status || delivery_failure || unsubscription) {
+        throw new AppError('This already happen');
+      }
       try {
         const invitedTemplate = path.resolve(
           __dirname,
@@ -44,11 +64,14 @@ export default class ProcessQueueService {
           },
         });
       } catch (err) {
+        distributionContact.delivery_failure = true;
+        distributionContact.error = err;
+        await this.distributionContactRepository.save(distributionContact);
         console.log(err);
-        // incluir servico ou repositório para gravar erro em distributionList
-
-        throw err;
+        throw new AppError('Algo deu errado');
       }
+      distributionContact.delivery_status = true;
+      await this.distributionContactRepository.save(distributionContact);
     });
   }
 }

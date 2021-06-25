@@ -9,7 +9,13 @@ import IUserTokensRepository from '@modules/users/repositories/IUserTokensReposi
 import UserTokensRepository from '@modules/users/infra/typeorm/repositories/UserTokensRepository';
 
 import ISubscribersRepository from '@modules/subscribers/repositories/ISubscriberRepository';
-import SubscribersRepository from '@modules/subscribers/infra/typeorm/repositories/SubscribersRepository';
+import SubscriberRepository from '@modules/subscribers/infra/typeorm/repositories/SubscribersRepository';
+
+import IDistributionRepository from '@modules/subscribers/repositories/IDistributionRepository';
+import DistributionRepository from '@modules/subscribers/infra/typeorm/repositories/DistributionRepository';
+
+import IDistributionContactRepository from '@modules/subscribers/repositories/IDistributionContactRepository';
+import DistributionContactRepository from '@modules/subscribers/infra/typeorm/repositories/DistributionContactRepository';
 
 container.registerSingleton<IUsersRepository>(
   'UsersRepository',
@@ -22,6 +28,16 @@ container.registerSingleton<IUserTokensRepository>(
 );
 
 container.registerSingleton<ISubscribersRepository>(
-  'SubscribersRepository',
-  SubscribersRepository,
+  'SubscriberRepository',
+  SubscriberRepository,
+);
+
+container.registerSingleton<IDistributionRepository>(
+  'DistributionRepository',
+  DistributionRepository,
+);
+
+container.registerSingleton<IDistributionContactRepository>(
+  'DistributionContactRepository',
+  DistributionContactRepository,
 );
