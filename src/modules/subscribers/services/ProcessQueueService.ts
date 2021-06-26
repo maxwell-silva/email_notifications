@@ -38,7 +38,6 @@ export default class ProcessQueueService {
         throw new AppError('This email already tried!');
       }
 
-
       try {
         const invitedTemplate = path.resolve(
           __dirname,

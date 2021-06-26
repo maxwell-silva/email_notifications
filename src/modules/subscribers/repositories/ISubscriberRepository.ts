@@ -9,4 +9,5 @@ export default interface ISubscribersRepositorory {
   create(data: ICreateRepositoryDTO): Promise<Subscriber>;
   import(data: ICreateRepositoryDTO[]): Promise<void>;
   save(subscriber: Subscriber): Promise<Subscriber>;
+  clean(): Promise<void>;
 }

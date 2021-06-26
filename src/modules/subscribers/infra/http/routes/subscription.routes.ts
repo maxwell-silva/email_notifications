@@ -43,5 +43,8 @@ subscriptionRouter.post(
   upload.single('file'),
   csvImporterController.create,
 );
-
+subscriptionRouter.post(
+  '/show',
+  subscriptionsController.show,
+);
 export default subscriptionRouter;

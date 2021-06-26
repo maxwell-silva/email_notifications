@@ -47,76 +47,7 @@ export default class SendForgotPasswordEmailService {
         });
       }
     });
-    // const teste: IMessageJob[] = [
-    //   // {
-    //   //   contact: {
-    //   //     email: 'fmsedrez@gmail.com',
-    //   //     name: 'Sedrez',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   // {
-    //   //   contact: {
-    //   //     email: 'rodrigo.oliveira@unifeob.edu.br',
-    //   //     name: 'Rodrigo Oliveira',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   // {
-    //   //   contact: {
-    //   //     email: 'elisabethmamede@gmail.com',
-    //   //     name: 'Elisabeth',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   // {
-    //   //   contact: {
-    //   //     email: 'fmsedrez@kody.com.br',
-    //   //     name: 'Sedrez',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   // {
-    //   //   contact: {
-    //   //     email: 'taciomedeiros@gmail.com',
-    //   //     name: 'Tacio',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   // {
-    //   //   contact: {
-    //   //     email: 'shark.max@hotmail.com',
-    //   //     name: 'Maxwell',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   // {
-    //   //   contact: {
-    //   //     email: 'carlos.stefan86@yahoo.com.br',
-    //   //     name: 'Carlos',
-    //   //   },
-    //   //   distributionId: 'invitedTeste',
-    //   // },
-    //   {
-    //     contact: {
-    //       email: 'maxwell.tj@hotmail.com',
-    //       name: 'Maxwell',
-    //     },
-    //     distributionId: 'invitedTeste',
-    //   },
-    //   {
-    //     contact: {
-    //       email: 'maxwellsilva1993@gmail.com',
-    //       name: 'Maxwell',
-    //     },
-    //     distributionId: 'invitedTeste',
-    //   },
-    // ];
-    /**
-     * step 1, obter contatos da lista de distribuição que ainda não receberam e-mail.
-     * step 2, chamar queue provider e adicionar aos agendamentos
-     *
-     */
+
       console.log(messagesJob);
     await this.queueProvider.add(messagesJob);
   }

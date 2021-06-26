@@ -49,6 +49,20 @@ class SubscriberRepository implements ISubscriberRepository {
     return subscribers;
   }
 
+  public async clean(): Promise<void> {
+    const subscribers = await this.ormRepository.find({
+      where: {
+        subscription_status: true,
+      },
+    });
+
+    const promises = subscribers.map(async subscriber => {
+      await this.ormRepository.delete(subscriber);
+    });
+
+    await Promise.all(promises);
+  }
+
   public async create({
     name,
     lastName,
@@ -71,7 +85,6 @@ class SubscriberRepository implements ISubscriberRepository {
   }
 
   public async import(data: ICreateSubscriberDTO[]): Promise<void> {
-
     const subscribers = this.ormRepository.create(data);
 
     await this.ormRepository.save(subscribers);
