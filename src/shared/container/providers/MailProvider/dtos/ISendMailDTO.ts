@@ -13,6 +13,7 @@ export default interface ISendMailDTO {
 }
 
 export interface IMessageJob {
+  id: string;
   contact: IMailContact;
   distributionId: string;
 }

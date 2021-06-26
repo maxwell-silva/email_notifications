@@ -42,6 +42,7 @@ export default class SendForgotPasswordEmailService {
             email: distributionContact.subscriber.email,
             name: distributionContact.subscriber.name,
           },
+          id: distributionContact.subscriber.id,
           distributionId: distribution_id,
         });
       }

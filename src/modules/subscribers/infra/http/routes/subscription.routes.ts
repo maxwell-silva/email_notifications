@@ -26,23 +26,22 @@ subscriptionRouter.post(
   }),
   subscriptionsController.create,
 );
+subscriptionRouter.get(
+  '/leave',
+  celebrate({
+    [Segments.QUERY]: {
+      dist: Joi.string().uuid().required(),
+      id: Joi.string().uuid().required(),
+    },
+  }),
+  leaveSubscriptionController.create,
+);
 
 subscriptionRouter.use(ensureAuthenticated);
-
 subscriptionRouter.post(
   '/import',
   upload.single('file'),
   csvImporterController.create,
-);
-subscriptionRouter.post(
-  '/leave',
-  celebrate({
-    [Segments.BODY]: {
-      distribution_id: Joi.string().uuid().required(),
-      subscriber_id: Joi.string().uuid().required(),
-    },
-  }),
-  leaveSubscriptionController.create,
 );
 
 export default subscriptionRouter;

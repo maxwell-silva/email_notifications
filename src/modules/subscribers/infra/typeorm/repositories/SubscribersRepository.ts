@@ -1,5 +1,5 @@
 import ICreateSubscriberDTO from '@modules/subscribers/dtos/ICreateSubscriberDTO';
-import { getRepository, In, In, Repository } from 'typeorm';
+import { getRepository, In, Repository } from 'typeorm';
 import ISubscriberRepository from '../../../repositories/ISubscriberRepository';
 import Subscriber from '../entities/Subscriber';
 

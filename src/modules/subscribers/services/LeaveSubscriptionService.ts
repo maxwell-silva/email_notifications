@@ -5,8 +5,8 @@ import IDistributionContactRepository from '../repositories/IDistributionContact
 import ISubscriberRepository from '../repositories/ISubscriberRepository';
 
 interface IRequest {
-  subscriber_id: string;
-  distribution_id?: string;
+  dist: string;
+  id: string;
 }
 
 @injectable()
@@ -22,11 +22,8 @@ export default class CreateDistributionService {
     private subscriberRepository: ISubscriberRepository,
   ) {}
 
-  public async execute({
-    subscriber_id,
-    distribution_id,
-  }: IRequest): Promise<void> {
-    const subscriber = await this.subscriberRepository.findById(subscriber_id);
+  public async execute({ dist, id }: IRequest): Promise<void> {
+    const subscriber = await this.subscriberRepository.findById(id);
 
     if (!subscriber) {
       throw new AppError('Ínvalid Request');
@@ -35,10 +32,10 @@ export default class CreateDistributionService {
 
     await this.subscriberRepository.save(subscriber);
 
-    if (distribution_id) {
+    if (dist) {
       const distributionContact = await this.distributionContactRepository.findBySubscriberAndDistribution(
-        subscriber_id,
-        distribution_id,
+        id,
+        dist,
       );
 
       if (!distributionContact) {

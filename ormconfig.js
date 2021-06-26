@@ -7,10 +7,10 @@ module.exports =   {
     "password": process.env.POSTGRES_PASS,
     "database": process.env.POSTGRES_DB,
     "entities": [
-      "./src/modules/*/infra/typeorm/entities/*.ts"
+      "./dist/modules/*/infra/typeorm/entities/*.js"
     ],
     "migrations": [
-      "./src/shared/infra/typeorm/migrations/*.ts"
+      "./dist/shared/infra/typeorm/migrations/*.js"
     ],
     "cli": {
       "migrationsDir": "./src/shared/infra/typeorm/migrations"

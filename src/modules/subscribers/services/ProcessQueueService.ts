@@ -28,7 +28,7 @@ export default class ProcessQueueService {
 
   execute(): void {
     this.queueProvider.process(async job => {
-      const { contact, distributionId } = job.data as IMessageJob;
+      const { contact, distributionId, id } = job.data as IMessageJob;
       const { email } = contact;
 
       const key = `mail-${distributionId}:${email}`;
@@ -37,6 +37,7 @@ export default class ProcessQueueService {
       if (emailCache) {
         throw new AppError('This email already tried!');
       }
+
 
       try {
         const invitedTemplate = path.resolve(
@@ -56,6 +57,7 @@ export default class ProcessQueueService {
             file: invitedTemplate,
             variables: {
               name: contact.name,
+              link: `http://api.ld1.be/subscription/leave?dist=${distributionId}&id=${id}`,
             },
           },
         });
@@ -67,7 +69,6 @@ export default class ProcessQueueService {
         console.log(err);
         throw new AppError('Algo deu errado');
       }
-      console.log(`eiiiiii`)
       await this.cacheProvider.save(key, {
         deliveryStatus: true,
         deliveryFailure: false,
