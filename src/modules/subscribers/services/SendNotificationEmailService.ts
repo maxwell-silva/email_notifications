@@ -14,7 +14,7 @@ interface IRequest {
 @injectable()
 export default class SendForgotPasswordEmailService {
   constructor(
-    @inject('SubscribersRepository')
+    @inject('SubscriberRepository')
     private subscribersRepository: ISubscriberRepository,
 
     @inject('MailProvider')
@@ -116,7 +116,7 @@ export default class SendForgotPasswordEmailService {
      * step 2, chamar queue provider e adicionar aos agendamentos
      *
      */
-
+      console.log(messagesJob);
     await this.queueProvider.add(messagesJob);
   }
 }

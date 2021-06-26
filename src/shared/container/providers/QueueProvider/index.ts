@@ -1,6 +1,6 @@
-import { container } from 'tsyringe';
-import mailConfig from '@config/mail';
 import cache from '@config/cache';
+import mailConfig from '@config/mail';
+import { container } from 'tsyringe';
 import BullProvider from './implementations/BullProvider';
 import IQueueProvider from './models/IQueueProvider';
 

@@ -29,6 +29,8 @@ export default {
   uploadsFolder: path.resolve(tmpFolder, 'uploads'),
 
   multer: {
+    directory: tmpFolder,
+
     storage: multer.diskStorage({
       destination: tmpFolder,
       filename(request, file, callback) {

@@ -21,6 +21,7 @@ export default class CreateDistributions1624462186360
           {
             name: 'created_by',
             type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'created_at',

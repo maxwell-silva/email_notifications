@@ -18,6 +18,7 @@
     "celebrate": "^12.2.0",
     "class-transformer": "^0.3.1",
     "cors": "^2.8.5",
+    "csv-parse": "^4.16.0",
     "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

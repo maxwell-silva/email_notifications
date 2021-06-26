@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import DistributionContacts from './DistributionContact';
 
@@ -39,6 +40,7 @@ class Subscriber {
       cascade: true,
     },
   )
+  @JoinColumn()
   distributions: DistributionContacts[];
 }
 

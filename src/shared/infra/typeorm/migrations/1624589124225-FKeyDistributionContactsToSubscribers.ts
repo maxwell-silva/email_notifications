@@ -1,10 +1,10 @@
 import {MigrationInterface, QueryRunner, TableForeignKey} from "typeorm";
 
-export default class FKeyDistributionContactsToSubscribers1624589124225 implements MigrationInterface {
+export default class FKeyDistributionContactsToSubscribers1624589124225
+  implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-
-        await queryRunner.createForeignKey(
+    await queryRunner.createForeignKey(
             'distribution_contacts',
             new TableForeignKey({
               name: 'FKeyDistributionContactsToSubscribers',

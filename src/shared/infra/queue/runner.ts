@@ -1,9 +1,9 @@
-import 'dotenv/config';
 import 'reflect-metadata';
+import 'dotenv/config';
 import { container } from 'tsyringe';
 
-import '@shared/infra/typeorm';
-import '@shared/container';
+import '../../container';
+import '../typeorm';
 
 import ProcessQueueService from '@modules/subscribers/services/ProcessQueueService';
 

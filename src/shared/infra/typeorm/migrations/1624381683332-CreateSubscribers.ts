@@ -21,6 +21,7 @@ export default class CreateSubscribers1624381683332
           {
             name: 'last_name',
             type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'email',
@@ -30,6 +31,7 @@ export default class CreateSubscribers1624381683332
           {
             name: 'subscription_status',
             type: 'boolean',
+            default: true,
           },
           {
             name: 'created_at',

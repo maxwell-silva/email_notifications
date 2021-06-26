@@ -10,8 +10,13 @@ export default class NotificationsController {
       CreateDistributionService,
     );
 
-    await createDistributionService.execute({ description });
+    const { id } = await createDistributionService.execute({
+      description,
+    });
 
-    return response.status(204).json();
+    return response.json({
+      id,
+      description,
+    });
   }
 }

@@ -25,10 +25,12 @@ export default class CreateDistributionContacts1624462229643
           {
             name: 'delivery_status',
             type: 'boolean',
+            default: false,
           },
           {
             name: 'unsubscription',
             type: 'boolean',
+            default: false,
           },
           {
             name: 'created_at',

@@ -2,10 +2,16 @@ import { injectable, inject } from 'tsyringe';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import { IMessageJob } from '@shared/container/providers/MailProvider/dtos/ISendMailDTO';
 import path from 'path';
+import '@shared/infra/typeorm';
 
 import IQueueProvider from '@shared/container/providers/QueueProvider/models/IQueueProvider';
 import AppError from '@shared/errors/AppError';
-import IDistributionContactRepository from '../repositories/IDistributionContactRepository';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+
+interface IMessageCache {
+  deliveryStatus: boolean;
+  deliveryFailure: boolean;
+}
 
 @injectable()
 export default class ProcessQueueService {
@@ -16,8 +22,8 @@ export default class ProcessQueueService {
     @inject('MailProvider')
     private mailProvider: IMailProvider,
 
-    @inject('DistributionContactRepository')
-    private distributionContactRepository: IDistributionContactRepository,
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider,
   ) {}
 
   execute(): void {
@@ -25,23 +31,13 @@ export default class ProcessQueueService {
       const { contact, distributionId } = job.data as IMessageJob;
       const { email } = contact;
 
-      const distributionContact = await this.distributionContactRepository.findByEmailAndDistribution(
-        email,
-        distributionId,
-      );
+      const key = `mail-${distributionId}:${email}`;
+      const emailCache = await this.cacheProvider.recover<IMessageCache>(key);
 
-      if (!distributionContact) {
-        throw new AppError('No Exists');
+      if (emailCache) {
+        throw new AppError('This email already tried!');
       }
-      const {
-        delivery_status,
-        delivery_failure,
-        unsubscription,
-      } = distributionContact;
 
-      if (delivery_status || delivery_failure || unsubscription) {
-        throw new AppError('This already happen');
-      }
       try {
         const invitedTemplate = path.resolve(
           __dirname,
@@ -64,14 +60,18 @@ export default class ProcessQueueService {
           },
         });
       } catch (err) {
-        distributionContact.delivery_failure = true;
-        distributionContact.error = err;
-        await this.distributionContactRepository.save(distributionContact);
+        await this.cacheProvider.save(key, {
+          deliveryStatus: false,
+          deliveryFailure: true,
+        });
         console.log(err);
         throw new AppError('Algo deu errado');
       }
-      distributionContact.delivery_status = true;
-      await this.distributionContactRepository.save(distributionContact);
+      console.log(`eiiiiii`)
+      await this.cacheProvider.save(key, {
+        deliveryStatus: true,
+        deliveryFailure: false,
+      });
     });
   }
 }

@@ -60,12 +60,12 @@ class DistributionContactRepository implements IDistributionContactRepository {
     const distributionContacts = await this.ormRepository.find({
       where: {
         distribution_id,
-        distribution: false,
+        delivery_status: false,
         delivery_failure: false,
+        unsubscription: false,
       },
-      loadEagerRelations: true,
+      relations: ['subscriber'],
     });
-
     return distributionContacts;
   }
 

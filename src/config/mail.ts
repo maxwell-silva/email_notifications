@@ -55,8 +55,8 @@ export default {
   shippingPerSecond: 10,
   defaults: {
     from: {
-      email: 'me@maxwellsilva.dev',
-      name: 'Maxwell Silva',
+      email: 'organizers@devfest.com.br',
+      name: 'GDG Organizers',
     },
   },
 } as IMailConfig;

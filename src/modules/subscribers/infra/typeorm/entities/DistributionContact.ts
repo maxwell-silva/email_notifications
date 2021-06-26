@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import Distribution from './Distribution';
 import Subscriber from './Subscriber';
@@ -39,10 +40,12 @@ class DistributionContacts {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Subscriber, subscriber => subscriber.distributions)
+  @ManyToOne(() => Subscriber)
+  @JoinColumn({ name: 'subscriber_id' })
   subscriber?: Subscriber;
 
-  @ManyToOne(() => Distribution, distribution => distribution.distributions)
+  @ManyToOne(() => Distribution)
+  @JoinColumn({ name: 'distribution_id' })
   distribution?: Distribution;
 }
 

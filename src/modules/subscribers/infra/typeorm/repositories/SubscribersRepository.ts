@@ -1,5 +1,5 @@
 import ICreateSubscriberDTO from '@modules/subscribers/dtos/ICreateSubscriberDTO';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, In, In, Repository } from 'typeorm';
 import ISubscriberRepository from '../../../repositories/ISubscriberRepository';
 import Subscriber from '../entities/Subscriber';
 
@@ -20,6 +20,21 @@ class SubscriberRepository implements ISubscriberRepository {
     const subscriber = await this.ormRepository.findOne(email);
 
     return subscriber;
+  }
+
+  public async findByEmails(emails: string[]): Promise<string[]> {
+    const alreadyExists = await this.ormRepository.find({
+      select: ['email'],
+      where: {
+        email: In(emails),
+      },
+    });
+
+    const alreadyExistsEmails = alreadyExists.map(e => {
+      return e.email;
+    });
+
+    return alreadyExistsEmails;
   }
 
   public async findAllSubscribers(
@@ -53,6 +68,13 @@ class SubscriberRepository implements ISubscriberRepository {
 
   public async save(subscriber: Subscriber): Promise<Subscriber> {
     return this.ormRepository.save(subscriber);
+  }
+
+  public async import(data: ICreateSubscriberDTO[]): Promise<void> {
+
+    const subscribers = this.ormRepository.create(data);
+
+    await this.ormRepository.save(subscribers);
   }
 }
 

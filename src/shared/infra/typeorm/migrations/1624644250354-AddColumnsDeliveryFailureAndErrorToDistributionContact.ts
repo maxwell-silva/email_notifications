@@ -8,6 +8,7 @@ export default class AddColumnsDeliveryFailureAndErrorToDistributionContact16246
       new TableColumn({
         name: 'delivery_failure',
         type: 'boolean',
+        isNullable: true,
       }),
     );
     await queryRunner.addColumn(
