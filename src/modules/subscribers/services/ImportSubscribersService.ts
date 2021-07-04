@@ -20,7 +20,7 @@ export default class CreateDistributionService {
     const contactsReadStream = fs.createReadStream(filePath);
 
     const parseStream = csvParse({
-      from_line: 0,
+      from_line: 1,
       ltrim: true,
       rtrim: true,
     });
