@@ -38,13 +38,11 @@ export default class CreateDistributionService {
         dist,
       );
 
-      if (!distributionContact) {
-        throw new AppError('Ínvalid Request');
+      if (distributionContact) {
+        distributionContact.unsubscription = true;
+
+        await this.distributionContactRepository.save(distributionContact);
       }
-
-      distributionContact.unsubscription = true;
-
-      await this.distributionContactRepository.save(distributionContact);
     }
   }
 }

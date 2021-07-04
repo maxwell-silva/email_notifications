@@ -1,4 +1,5 @@
 import { injectable, inject } from 'tsyringe';
+import AppError from '@shared/errors/AppError';
 import ISubscriberRepository from '../repositories/ISubscriberRepository';
 import Subscriber from '../infra/typeorm/entities/Subscriber';
 
@@ -20,6 +21,11 @@ export default class JoinSubscriptionService {
     email,
     lastName,
   }: IRequest): Promise<Subscriber> {
+    const emailAlreadyUsed = await this.subscriberRepository.findByEmail(email);
+    console.log(emailAlreadyUsed);
+    if (emailAlreadyUsed) {
+      throw new AppError('This e-mail already used');
+    }
     const subscriber = await this.subscriberRepository.create({
       name,
       lastName,

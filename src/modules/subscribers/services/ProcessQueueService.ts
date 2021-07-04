@@ -43,7 +43,7 @@ export default class ProcessQueueService {
           __dirname,
           '..',
           'views',
-          'invited_IOExtended.hbs',
+          'invited_pesquisa.hbs',
         );
 
         await this.mailProvider.sendMail({
@@ -51,7 +51,7 @@ export default class ProcessQueueService {
             name: contact.name,
             email: contact.email,
           },
-          subject: '[Google I/O Extended 2021] Inscreva-se',
+          subject: '[Google I/O Extended 2021] Feedback',
           templateData: {
             file: invitedTemplate,
             variables: {

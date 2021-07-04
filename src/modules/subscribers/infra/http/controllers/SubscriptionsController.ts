@@ -36,6 +36,6 @@ export default class SubscriptionsController {
 
     await cleanSubscribersService.execute();
 
-    return response.status(204);
+    return response.status(204).json();
   }
 }

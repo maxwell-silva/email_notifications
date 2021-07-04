@@ -30,7 +30,7 @@ subscriptionRouter.get(
   '/leave',
   celebrate({
     [Segments.QUERY]: {
-      dist: Joi.string().uuid().required(),
+      dist: Joi.string().uuid(),
       id: Joi.string().uuid().required(),
     },
   }),
@@ -43,8 +43,6 @@ subscriptionRouter.post(
   upload.single('file'),
   csvImporterController.create,
 );
-subscriptionRouter.post(
-  '/show',
-  subscriptionsController.show,
-);
+subscriptionRouter.post('/show', subscriptionsController.show);
+subscriptionRouter.post('/clean', subscriptionsController.clean);
 export default subscriptionRouter;

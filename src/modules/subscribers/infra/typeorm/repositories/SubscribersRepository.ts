@@ -17,7 +17,7 @@ class SubscriberRepository implements ISubscriberRepository {
   }
 
   public async findByEmail(email: string): Promise<Subscriber | undefined> {
-    const subscriber = await this.ormRepository.findOne(email);
+    const subscriber = await this.ormRepository.findOne({ email });
 
     return subscriber;
   }
@@ -50,17 +50,7 @@ class SubscriberRepository implements ISubscriberRepository {
   }
 
   public async clean(): Promise<void> {
-    const subscribers = await this.ormRepository.find({
-      where: {
-        subscription_status: true,
-      },
-    });
-
-    const promises = subscribers.map(async subscriber => {
-      await this.ormRepository.delete(subscriber);
-    });
-
-    await Promise.all(promises);
+    await this.ormRepository.delete({ subscription_status: true });
   }
 
   public async create({

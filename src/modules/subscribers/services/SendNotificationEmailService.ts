@@ -48,7 +48,6 @@ export default class SendForgotPasswordEmailService {
       }
     });
 
-      console.log(messagesJob);
     await this.queueProvider.add(messagesJob);
   }
 }
