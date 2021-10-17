@@ -4,6 +4,8 @@ import { injectable, inject } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRespository from '@modules/users/repositories/IUsersRepository';
+import IGroupRepository from '@modules/groups/repositories/IGroupRepository';
+import Group from '@modules/groups/infra/typeorm/entities/Group';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 interface IRequest {
@@ -14,6 +16,7 @@ interface IRequest {
 interface IRespose {
   user: User;
   token: string;
+  groups: Group[];
 }
 
 @injectable()
@@ -24,6 +27,9 @@ export default class AuthenticateUserService {
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
+
+    @inject('GroupRepository')
+    private groupRepository: IGroupRepository,
   ) {}
 
   public async execute({ email, password }: IRequest): Promise<IRespose> {
@@ -49,9 +55,13 @@ export default class AuthenticateUserService {
       expiresIn,
     });
 
+    const groups = await this.groupRepository.findByOwnerId(user.id);
+    console.log(groups);
+
     return {
       user,
       token,
+      groups,
     };
   }
 }

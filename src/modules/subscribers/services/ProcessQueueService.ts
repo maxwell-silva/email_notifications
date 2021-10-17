@@ -28,7 +28,15 @@ export default class ProcessQueueService {
 
   execute(): void {
     this.queueProvider.process(async job => {
-      const { contact, distributionId, id } = job.data as IMessageJob;
+      const {
+        contact,
+        distributionId,
+        id,
+        from,
+        subject,
+        view,
+        variables,
+      } = job.data as IMessageJob;
       const { email } = contact;
 
       const key = `mail-${distributionId}:${email}`;
@@ -38,26 +46,24 @@ export default class ProcessQueueService {
         throw new AppError('This email already tried!');
       }
 
+      const defaultVariables = {
+        name: contact.name,
+        link: `http://api.ld1.be/subscription/leave?dist=${distributionId}&id=${id}`,
+      };
+
       try {
-        const invitedTemplate = path.resolve(
-          __dirname,
-          '..',
-          'views',
-          'invited_pesquisa.hbs',
-        );
+        const invitedTemplate = path.resolve(view);
 
         await this.mailProvider.sendMail({
+          from,
           to: {
             name: contact.name,
             email: contact.email,
           },
-          subject: '[Google I/O Extended 2021] Feedback',
+          subject: subject.replace(/:name/g, contact.name),
           templateData: {
             file: invitedTemplate,
-            variables: {
-              name: contact.name,
-              link: `http://api.ld1.be/subscription/leave?dist=${distributionId}&id=${id}`,
-            },
+            variables: variables || defaultVariables,
           },
         });
       } catch (err) {

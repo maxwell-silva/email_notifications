@@ -6,6 +6,8 @@ import profileRouter from '@modules/users/infra/http/routes/profile.routes';
 import notificationRouter from '@modules/subscribers/infra/http/routes/notification.routes';
 import distributionRouter from '@modules/subscribers/infra/http/routes/distribution.routes';
 import subscriptionRouter from '@modules/subscribers/infra/http/routes/subscription.routes';
+import group from '@modules/groups/infra/http/routes/group.routes';
+import viewsRouter from '@modules/views/infra/http/routes/view.routes';
 
 const routes = Router();
 
@@ -16,5 +18,7 @@ routes.use('/profile', profileRouter);
 routes.use('/notification', notificationRouter);
 routes.use('/distribution', distributionRouter);
 routes.use('/subscription', subscriptionRouter);
+routes.use('/group', group);
+routes.use('/views', viewsRouter);
 
 export default routes;

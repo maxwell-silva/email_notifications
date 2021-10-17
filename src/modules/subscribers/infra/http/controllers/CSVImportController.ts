@@ -8,7 +8,9 @@ export default class ImportController {
       ImportSubscribersService,
     );
 
-    await importSubscribersService.execute(request.file.path);
+    const { groupId } = request.body;
+
+    await importSubscribersService.execute(request.file.path, groupId);
 
     return response.status(204).json();
   }

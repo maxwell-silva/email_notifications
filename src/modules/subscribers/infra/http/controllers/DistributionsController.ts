@@ -4,19 +4,32 @@ import CreateDistributionService from '@modules/subscribers/services/CreateDistr
 
 export default class NotificationsController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { description } = request.body;
+    const {
+      description,
+      groups,
+      subject,
+      viewId,
+      excludSubscribersByGroup,
+    } = request.body;
 
     const createDistributionService = container.resolve(
       CreateDistributionService,
     );
 
-    const { id } = await createDistributionService.execute({
+    const {
+      distribution,
+      amountOfEmails,
+    } = await createDistributionService.execute({
       description,
+      groups,
+      subject,
+      viewId,
+      excludSubscribersByGroup,
     });
 
     return response.json({
-      id,
-      description,
+      amountOfEmails,
+      distribution,
     });
   }
 }

@@ -17,24 +17,23 @@ class SubscriberRepository implements ISubscriberRepository {
   }
 
   public async findByEmail(email: string): Promise<Subscriber | undefined> {
-    const subscriber = await this.ormRepository.findOne({ email });
+    const subscriber = await this.ormRepository.findOne({
+      where: { email },
+      relations: ['subscribersGroup'],
+    });
 
     return subscriber;
   }
 
-  public async findByEmails(emails: string[]): Promise<string[]> {
+  public async findByEmails(emails: string[]): Promise<Subscriber[]> {
     const alreadyExists = await this.ormRepository.find({
-      select: ['email'],
       where: {
         email: In(emails),
       },
+      relations: ['subscribersGroup'],
     });
 
-    const alreadyExistsEmails = alreadyExists.map(e => {
-      return e.email;
-    });
-
-    return alreadyExistsEmails;
+    return alreadyExists;
   }
 
   public async findAllSubscribers(
@@ -70,14 +69,23 @@ class SubscriberRepository implements ISubscriberRepository {
     return subscriber;
   }
 
-  public async save(subscriber: Subscriber): Promise<Subscriber> {
-    return this.ormRepository.save(subscriber);
+  public async save(
+    subscriber: Subscriber | Subscriber[],
+  ): Promise<Subscriber | Subscriber[]> {
+    if (Array.isArray(subscriber)) {
+      await this.ormRepository.save(subscriber);
+    } else {
+      await this.ormRepository.save(subscriber);
+    }
+    return subscriber;
   }
 
-  public async import(data: ICreateSubscriberDTO[]): Promise<void> {
+  public async import(data: ICreateSubscriberDTO[]): Promise<Subscriber[]> {
     const subscribers = this.ormRepository.create(data);
 
     await this.ormRepository.save(subscribers);
+
+    return subscribers;
   }
 }
 

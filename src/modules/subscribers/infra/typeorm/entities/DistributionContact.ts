@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import Group from '@modules/groups/infra/typeorm/entities/Group';
 import {
   Entity,
   Column,
@@ -23,6 +24,9 @@ class DistributionContacts {
   subscriber_id: string;
 
   @Column()
+  group_id: string;
+
+  @Column()
   delivery_status: boolean;
 
   @Column()
@@ -40,13 +44,23 @@ class DistributionContacts {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Subscriber)
+  @ManyToOne(() => Subscriber, {
+    eager: true,
+  })
   @JoinColumn({ name: 'subscriber_id' })
-  subscriber?: Subscriber;
+  subscriber: Subscriber;
 
-  @ManyToOne(() => Distribution)
+  @ManyToOne(() => Group, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'group_id' })
+  group: Group;
+
+  @ManyToOne(() => Distribution, {
+    eager: true,
+  })
   @JoinColumn({ name: 'distribution_id' })
-  distribution?: Distribution;
+  distribution: Distribution;
 }
 
 export default DistributionContacts;

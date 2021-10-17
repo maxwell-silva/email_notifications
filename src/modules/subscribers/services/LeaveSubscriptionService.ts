@@ -30,6 +30,10 @@ export default class CreateDistributionService {
     }
     subscriber.subscription_status = false;
 
+    subscriber.subscribersGroup.forEach(e => {
+      e.subscription_status = false;
+    });
+
     await this.subscriberRepository.save(subscriber);
 
     if (dist) {

@@ -1,5 +1,5 @@
-import Subscriber from '@modules/subscribers/infra/typeorm/entities/Subscriber';
 import DistributionContact from '@modules/subscribers/infra/typeorm/entities/DistributionContact';
+import ICreateSubscriberDTO from '../dtos/ICreateDistributionContactDTO';
 
 export default interface ISubscribersRepositorory {
   findByEmailAndDistribution(
@@ -12,7 +12,7 @@ export default interface ISubscribersRepositorory {
   ): Promise<DistributionContact | undefined>;
   create(
     distribution_id: string,
-    subscribers: Subscriber[],
+    subscribers: ICreateSubscriberDTO[],
   ): Promise<DistributionContact[]>;
   save(distributionContact: DistributionContact): Promise<DistributionContact>;
   findNoNotificatedContactsByDistribution(

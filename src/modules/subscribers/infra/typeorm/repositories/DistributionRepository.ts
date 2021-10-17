@@ -1,3 +1,4 @@
+import ICreateDistributionDTO from '@modules/subscribers/dtos/ICreateDistributionDTO';
 import { getRepository, Repository } from 'typeorm';
 import IDistributionRepository from '../../../repositories/IDistributionRepository';
 import Distribution from '../entities/Distribution';
@@ -15,8 +16,16 @@ class DistributionRepository implements IDistributionRepository {
     return distribution;
   }
 
-  public async create(description: string): Promise<Distribution> {
-    const distribution = this.ormRepository.create({ description });
+  public async create({
+    description,
+    subject,
+    view_id,
+  }: ICreateDistributionDTO): Promise<Distribution> {
+    const distribution = this.ormRepository.create({
+      description,
+      subject,
+      view_id,
+    });
 
     await this.ormRepository.save(distribution);
 

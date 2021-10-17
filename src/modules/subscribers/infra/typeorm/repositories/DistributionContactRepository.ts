@@ -1,7 +1,7 @@
+import ICreateSubscriberDTO from '@modules/subscribers/dtos/ICreateDistributionContactDTO';
 import { getRepository, Repository } from 'typeorm';
 import IDistributionContactRepository from '../../../repositories/IDistributionContactRepository';
 import DistributionContact from '../entities/DistributionContact';
-import Subscriber from '../entities/Subscriber';
 
 class DistributionContactRepository implements IDistributionContactRepository {
   private ormRepository: Repository<DistributionContact>;
@@ -36,16 +36,18 @@ class DistributionContactRepository implements IDistributionContactRepository {
 
   public async create(
     distribution_id: string,
-    subscribers: Subscriber[],
+    subscribers: ICreateSubscriberDTO[],
   ): Promise<DistributionContact[]> {
     const distributionContacts = subscribers.map(subscriber => {
-      return this.ormRepository.create({
+      const distribution = this.ormRepository.create({
         distribution_id,
-        subscriber_id: subscriber.id,
+        subscriber_id: subscriber.subscriber_id,
+        group_id: subscriber.group_id,
         delivery_status: false,
         unsubscription: false,
         delivery_failure: false,
       });
+      return distribution;
     });
     return this.ormRepository.save(distributionContacts);
   }
@@ -76,6 +78,7 @@ class DistributionContactRepository implements IDistributionContactRepository {
       .createQueryBuilder('distribution_contacts')
       .where(distribution_id)
       .leftJoinAndSelect('distribution_contacts.subscriber', 'subscriber')
+      .leftJoinAndSelect('subscriber.subscribersGroup', 'subscribersGroup')
       .getMany();
 
     return distributionContacts;

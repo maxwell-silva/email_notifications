@@ -1,3 +1,6 @@
+import IGroupRepository from '@modules/groups/repositories/IGroupRepository';
+import ISubscribersGroupRepository from '@modules/groups/repositories/ISubscribersGroupRepository';
+import AppError from '@shared/errors/AppError';
 import csvParse from 'csv-parse';
 import fs from 'fs';
 import { injectable, inject } from 'tsyringe';
@@ -14,10 +17,22 @@ export default class CreateDistributionService {
   constructor(
     @inject('SubscriberRepository')
     private subscriberRepository: ISubscriberRepository,
+
+    @inject('GroupRepository')
+    private groupRepository: IGroupRepository,
+
+    @inject('SubscribersGroupRepository')
+    private subscribersGroupRepository: ISubscribersGroupRepository,
   ) {}
 
-  public async execute(filePath: string): Promise<void> {
+  public async execute(filePath: string, groupId: string): Promise<void> {
     const contactsReadStream = fs.createReadStream(filePath);
+
+    const group = await this.groupRepository.findById(groupId);
+
+    if (!group) {
+      throw new AppError('Invalid Group to import');
+    }
 
     const parseStream = csvParse({
       from_line: 1,
@@ -47,20 +62,32 @@ export default class CreateDistributionService {
       [],
     );
 
-    const existsEmails = await this.subscriberRepository.findByEmails(
+    const alreadyExists = await this.subscriberRepository.findByEmails(
       CSVSubscribers.map(e => {
         return e.email;
       }),
     );
 
-    const addSubscribers = CSVSubscribers.filter(
+    const existsEmails = alreadyExists.map(e => e.email);
+
+    const subscribersToImport = CSVSubscribers.filter(
       subscriber => !existsEmails.includes(subscriber.email),
     );
 
-    await this.subscriberRepository.import(
-      addSubscribers.map(sub => ({
+    const subscribersImported = await this.subscriberRepository.import(
+      subscribersToImport.map(sub => ({
         name: sub.name,
         email: sub.email,
+      })),
+    );
+
+    const addSubscribersToGroup = [...alreadyExists, ...subscribersImported];
+
+    await this.subscribersGroupRepository.import(
+      addSubscribersToGroup.map(sub => ({
+        group_id: groupId,
+        subscriber_id: sub.id,
+        subscrition_status: true,
       })),
     );
   }

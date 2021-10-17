@@ -6,7 +6,7 @@ import CleanSubscribersService from '@modules/subscribers/services/CleanSubscrib
 
 export default class SubscriptionsController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, lastName, email } = request.body;
+    const { name, lastName, email, groupId } = request.body;
 
     const joinSubscriptionService = container.resolve(JoinSubscriptionService);
 
@@ -14,6 +14,7 @@ export default class SubscriptionsController {
       name,
       lastName,
       email,
+      groupId,
     });
 
     return response.status(204).json();

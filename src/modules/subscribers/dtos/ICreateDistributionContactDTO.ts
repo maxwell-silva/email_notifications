@@ -1,5 +1,4 @@
 export default interface ICreateSubscriberDTO {
-  name: string;
-  lastName?: string;
-  email: string;
+  group_id: string;
+  subscriber_id: string;
 }

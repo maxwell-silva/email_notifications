@@ -21,6 +21,18 @@ class Distribution {
   @Column()
   created_by: string;
 
+  @Column()
+  view_id: string;
+
+  @Column()
+  subject: string;
+
+  @Column()
+  unsubscribe_clicks: number;
+
+  @Column()
+  engagement_clicks: number;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -29,7 +41,7 @@ class Distribution {
 
   @OneToMany(
     () => DistributionContacts,
-    distributionContact => distributionContact.distribution_id,
+    distributionContact => distributionContact.distribution,
     {
       cascade: true,
     },

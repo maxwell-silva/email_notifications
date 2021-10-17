@@ -17,6 +17,15 @@ import DistributionRepository from '@modules/subscribers/infra/typeorm/repositor
 import IDistributionContactRepository from '@modules/subscribers/repositories/IDistributionContactRepository';
 import DistributionContactRepository from '@modules/subscribers/infra/typeorm/repositories/DistributionContactRepository';
 
+import IGroupRepository from '@modules/groups/repositories/IGroupRepository';
+import GroupRepository from '@modules/groups/infra/typeorm/repositories/GroupRepository';
+
+import ISubscribersGroupRepository from '@modules/groups/repositories/ISubscribersGroupRepository';
+import SubscribersGroupRepository from '@modules/groups/infra/typeorm/repositories/SubscribersGroupRepository';
+
+import ViewsRepository from '@modules/views/infra/typeorm/repositories/ViewsRepository';
+import IViewsRepository from '@modules/views/repositories/IViewsRepository';
+
 container.registerSingleton<IUsersRepository>(
   'UsersRepository',
   UsersRepository,
@@ -40,4 +49,19 @@ container.registerSingleton<IDistributionRepository>(
 container.registerSingleton<IDistributionContactRepository>(
   'DistributionContactRepository',
   DistributionContactRepository,
+);
+
+container.registerSingleton<IGroupRepository>(
+  'GroupRepository',
+  GroupRepository,
+);
+
+container.registerSingleton<ISubscribersGroupRepository>(
+  'SubscribersGroupRepository',
+  SubscribersGroupRepository,
+);
+
+container.registerSingleton<IViewsRepository>(
+  'ViewsRepository',
+  ViewsRepository,
 );

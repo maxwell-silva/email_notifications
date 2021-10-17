@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import SubscribersGroup from '@modules/groups/infra/typeorm/entities/SubscribersGroup';
 import {
   Entity,
   Column,
@@ -6,7 +7,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  JoinColumn,
 } from 'typeorm';
 import DistributionContacts from './DistributionContact';
 
@@ -35,13 +35,21 @@ class Subscriber {
 
   @OneToMany(
     () => DistributionContacts,
-    distributionContact => distributionContact.subscriber_id,
+    distributionContact => distributionContact.subscriber,
     {
       cascade: true,
     },
   )
-  @JoinColumn()
   distributions: DistributionContacts[];
+
+  @OneToMany(
+    () => SubscribersGroup,
+    subscribersGroup => subscribersGroup.subscriber,
+    {
+      cascade: true,
+    },
+  )
+  subscribersGroup: SubscribersGroup[];
 }
 
 export default Subscriber;

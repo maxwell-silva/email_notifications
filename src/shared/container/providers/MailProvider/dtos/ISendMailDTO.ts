@@ -1,4 +1,6 @@
-import IParseMailTemplateDTO from '@shared/container/providers/MailTemplateProvider/dtos/IParseMailTemplateDTO';
+import IParseMailTemplateDTO, {
+  ITemplateVariables,
+} from '@shared/container/providers/MailTemplateProvider/dtos/IParseMailTemplateDTO';
 
 interface IMailContact {
   name: string;
@@ -14,6 +16,10 @@ export default interface ISendMailDTO {
 
 export interface IMessageJob {
   id: string;
+  from: IMailContact;
   contact: IMailContact;
+  subject: string;
+  view: string;
   distributionId: string;
+  variables?: ITemplateVariables;
 }
