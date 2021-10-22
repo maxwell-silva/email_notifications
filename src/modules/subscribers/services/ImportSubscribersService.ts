@@ -4,6 +4,7 @@ import AppError from '@shared/errors/AppError';
 import csvParse from 'csv-parse';
 import fs from 'fs';
 import { injectable, inject } from 'tsyringe';
+import Subscriber from '../infra/typeorm/entities/Subscriber';
 import ISubscriberRepository from '../repositories/ISubscriberRepository';
 
 interface ICSVImport {
@@ -25,7 +26,11 @@ export default class CreateDistributionService {
     private subscribersGroupRepository: ISubscribersGroupRepository,
   ) {}
 
-  public async execute(filePath: string, groupId: string): Promise<void> {
+  public async execute(
+    filePath: string,
+    groupId: string,
+    renewSubscription: boolean,
+  ): Promise<void> {
     const contactsReadStream = fs.createReadStream(filePath);
 
     const group = await this.groupRepository.findById(groupId);
@@ -68,6 +73,17 @@ export default class CreateDistributionService {
       }),
     );
 
+    if (renewSubscription) {
+      const renewSubscriptions: Subscriber[] = alreadyExists.map(e => {
+        return {
+          ...e,
+          subscription_status: true,
+        };
+      });
+
+      await this.subscriberRepository.save(renewSubscriptions);
+    }
+
     const existsEmails = alreadyExists.map(e => e.email);
 
     const subscribersToImport = CSVSubscribers.filter(
@@ -75,19 +91,19 @@ export default class CreateDistributionService {
     );
 
     const subscribersImported = await this.subscriberRepository.import(
-      subscribersToImport.map(sub => ({
-        name: sub.name,
-        email: sub.email,
+      subscribersToImport.map(e => ({
+        name: e.name,
+        email: e.email,
       })),
     );
 
     const addSubscribersToGroup = [...alreadyExists, ...subscribersImported];
 
     await this.subscribersGroupRepository.import(
-      addSubscribersToGroup.map(sub => ({
+      addSubscribersToGroup.map(e => ({
         group_id: groupId,
-        subscriber_id: sub.id,
-        subscrition_status: true,
+        subscriber_id: e.id,
+        subscription_status: true,
       })),
     );
   }

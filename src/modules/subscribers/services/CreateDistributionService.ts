@@ -1,6 +1,5 @@
 import { injectable, inject } from 'tsyringe';
 import ISubscribersGroupRepository from '@modules/groups/repositories/ISubscribersGroupRepository';
-import Subscriber from '@modules/subscribers/infra/typeorm/entities/Subscriber';
 import AppError from '@shared/errors/AppError';
 import IDistributionRepository from '../repositories/IDistributionRepository';
 import IDistributionContactRepository from '../repositories/IDistributionContactRepository';
@@ -43,6 +42,10 @@ export default class CreateDistributionService {
     subject,
     viewId: view_id,
   }: IRequest): Promise<IResponse> {
+    if (!groups.length) {
+      throw new AppError('Invalid request, groups is important');
+    }
+
     const distribution = await this.distributionRepository.create({
       description,
       subject,
@@ -54,14 +57,26 @@ export default class CreateDistributionService {
       true,
     );
 
-    const exceptedSubscribers =
-      excludSubscribersByGroup?.length &&
-      (await this.subscribersGroupRepository.findAllSubscribersByIdGroups(
-        excludSubscribersByGroup,
-        true,
-      ));
+    if (!subscribersToAdd?.length) {
+      throw new AppError('The parameters result 0 subscribers to notificate');
+    }
 
-    const subscribers = exceptedSubscribers || subscribersToAdd;
+    const exceptedSubscribers = excludSubscribersByGroup?.length
+      ? await this.subscribersGroupRepository.findAllSubscribersByIdGroups(
+          excludSubscribersByGroup,
+          true,
+        )
+      : undefined;
+
+    const exceptedSubscribersIds = exceptedSubscribers
+      ? exceptedSubscribers.map(subscriber => subscriber.id)
+      : undefined;
+
+    const subscribers = exceptedSubscribersIds
+      ? subscribersToAdd.filter(
+          subscriber => !exceptedSubscribersIds.includes(subscriber.id),
+        )
+      : subscribersToAdd;
 
     if (!subscribers?.length) {
       throw new AppError('The parameters result 0 subscribers to notificate');

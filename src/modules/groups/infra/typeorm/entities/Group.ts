@@ -29,9 +29,6 @@ class Group {
   @Column()
   owner: string;
 
-  @Column()
-  created_by: string;
-
   @CreateDateColumn()
   created_at: Date;
 

@@ -29,7 +29,7 @@ export default class CreateGroups1631367121321 implements MigrationInterface {
           },
           {
             name: 'owner',
-            type: 'varchar',
+            type: 'uuid',
             isNullable: true,
           },
           {

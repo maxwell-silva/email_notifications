@@ -11,7 +11,12 @@ class SubscriberRepository implements ISubscriberRepository {
   }
 
   public async findById(id: string): Promise<Subscriber | undefined> {
-    const subscriber = await this.ormRepository.findOne(id);
+    const subscriber = await this.ormRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['subscribersGroup'],
+    });
 
     return subscriber;
   }

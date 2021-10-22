@@ -72,7 +72,6 @@ export default class CreateSubscribersTag1633058731092
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('subscribers_tag');
     await queryRunner.dropForeignKey(
       'subscribers_tag',
       'FKeySubscribersTagToTags',
@@ -81,5 +80,6 @@ export default class CreateSubscribersTag1633058731092
       'subscribers_tag',
       'FKeySubscribersTagToSubscribers',
     );
+    await queryRunner.dropTable('subscribers_tag');
   }
 }

@@ -2,6 +2,7 @@ import ICreateSubscriberGroupDTO from '@modules/groups/dtos/ICreateSubscriberGro
 import IOldestSubscriptionDTO from '@modules/groups/dtos/IOldestSubscriptionDTO';
 import ISubscribersGroupRepository from '@modules/groups/repositories/ISubscribersGroupRepository';
 import Subscriber from '@modules/subscribers/infra/typeorm/entities/Subscriber';
+import AppError from '@shared/errors/AppError';
 import { getRepository, In, Repository } from 'typeorm';
 import Group from '../entities/Group';
 import SubscribersGroup from '../entities/SubscribersGroup';
@@ -17,7 +18,13 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
     subscribers: Subscriber[],
     group_ids: string[],
   ): Promise<IOldestSubscriptionDTO[]> {
-    const serealizingGroupId = group_ids.map(e => `'${e}'`);
+    const removedInvalidValues: Array<string> = group_ids.filter(
+      e => e,
+    ) as Array<string>;
+    const serealizingGroupId = removedInvalidValues.map(e => `'${e}'`);
+    if (!serealizingGroupId.length) {
+      throw new AppError('Invalid request,');
+    }
     const groupsIds = serealizingGroupId.join(',');
     const promises = subscribers.map(subscriber => {
       return this.ormRepository.query(
@@ -37,14 +44,27 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
       );
     });
 
-    const oldestSubscriptionsArrayPromise = await Promise.all(promises);
+    const promiseResponse = await Promise.all(promises);
+    if (!promiseResponse.length) {
+      throw new AppError('invalid request, no results');
+    }
+    const flattedData = promiseResponse.reduce(
+      (acc, val) => acc.concat(val),
+      [],
+    );
 
-    const oldestSubscriptions = oldestSubscriptionsArrayPromise.map(sub => {
-      const { subscriber_id, group_id } = sub[0];
-      return { subscriber_id, group_id };
-    });
-    console.log(oldestSubscriptions);
-    return oldestSubscriptions;
+    const oldestSubscriptions: IOldestSubscriptionDTO[] = flattedData.map(
+      (sub: { subscriber_id: string; group_id: string }) => {
+        const { subscriber_id, group_id } = sub;
+        return { subscriber_id, group_id };
+      },
+    );
+
+    const responseData = oldestSubscriptions.filter(
+      e => e.group_id && e.subscriber_id,
+    );
+
+    return responseData;
   }
 
   public async findGroupsBySubscriberId(
@@ -110,7 +130,7 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
     const subscription = this.ormRepository.create({
       subscriber_id: data.subscriber_id,
       group_id: data.group_id,
-      subscription_status: data.subscrition_status,
+      subscription_status: data.subscription_status,
     });
 
     await this.ormRepository.save(subscription);

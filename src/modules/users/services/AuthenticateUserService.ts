@@ -56,7 +56,6 @@ export default class AuthenticateUserService {
     });
 
     const groups = await this.groupRepository.findByOwnerId(user.id);
-    console.log(groups);
 
     return {
       user,
