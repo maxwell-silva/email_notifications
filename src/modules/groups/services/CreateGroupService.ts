@@ -23,12 +23,6 @@ export default class CreateDistributionService {
     email,
     name,
   }: IRequest): Promise<Group> {
-    const existsEmail = await this.groupRepository.findByEmail(email);
-
-    if (existsEmail) {
-      throw new AppError(`The email ${email} already used by another group`);
-    }
-
     const existsDescription = await this.groupRepository.findByDescription(
       description,
     );
