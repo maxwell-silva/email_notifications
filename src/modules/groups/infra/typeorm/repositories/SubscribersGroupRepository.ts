@@ -101,7 +101,8 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
     const subscribers = subscribersGroup.reduce(
       (result: Subscriber[], currentValue: SubscribersGroup) => {
         return result.find(
-          subscriber => subscriber.id === currentValue.subscriber_id,
+          subscriber =>
+            subscriber && subscriber.id === currentValue.subscriber_id,
         )
           ? result
           : [...result, currentValue.subscriber];
@@ -126,7 +127,8 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
     const subscribers = subscribersGroup.reduce(
       (result: Subscriber[], currentValue: SubscribersGroup) => {
         return result.find(
-          subscriber => subscriber.id === currentValue.subscriber_id,
+          subscriber =>
+            subscriber && subscriber.id === currentValue.subscriber_id,
         )
           ? result
           : [...result, currentValue.subscriber];
@@ -134,7 +136,9 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
       [],
     );
 
-    return subscribers;
+    const reponseData = subscribers.filter(e => e);
+
+    return reponseData;
   }
 
   public async create(
