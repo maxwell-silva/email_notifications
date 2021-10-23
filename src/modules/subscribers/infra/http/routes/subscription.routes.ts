@@ -67,5 +67,6 @@ subscriptionRouter.post(
   csvImporterController.create,
 );
 subscriptionRouter.post('/show', subscriptionsController.show);
+subscriptionRouter.get('/show/:groupId', subscriptionsController.get);
 subscriptionRouter.post('/clean', subscriptionsController.clean);
 export default subscriptionRouter;

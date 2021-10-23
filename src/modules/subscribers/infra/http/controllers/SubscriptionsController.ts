@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import ShowSubscribersService from '@modules/subscribers/services/ShowSubscribersService';
+import ShowSubscribersServiceByGroup from '@modules/subscribers/services/ShowSubscribersServiceByGroup';
 import JoinSubscriptionService from '@modules/subscribers/services/JoinSubscriptionService';
 import CleanSubscribersService from '@modules/subscribers/services/CleanSubscribersService';
 
@@ -27,6 +28,19 @@ export default class SubscriptionsController {
 
     const subscribers = await showSubscribersService.execute({
       subscription_status,
+    });
+
+    return response.json(subscribers);
+  }
+
+  async get(request: Request, response: Response): Promise<Response> {
+    const { groupId } = request.params;
+    const showSubscribersServiceByGroup = container.resolve(
+      ShowSubscribersServiceByGroup,
+    );
+
+    const subscribers = await showSubscribersServiceByGroup.execute({
+      groupId,
     });
 
     return response.json(subscribers);
