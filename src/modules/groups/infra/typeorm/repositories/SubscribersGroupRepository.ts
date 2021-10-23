@@ -79,6 +79,17 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
     return groups;
   }
 
+  public async findByIdAndGroupId(
+    id: string,
+    group_id: string,
+  ): Promise<SubscribersGroup | undefined> {
+    const subscriptions = await this.ormRepository.findOne({
+      where: { subscriber_id: id, group_id },
+    });
+
+    return subscriptions;
+  }
+
   public async findAllSubscribersByGroup(
     group_id: string,
     subscription_status: boolean,
@@ -89,9 +100,11 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
 
     const subscribers = subscribersGroup.reduce(
       (result: Subscriber[], currentValue: SubscribersGroup) => {
-        return currentValue.subscriber
-          ? [...result, currentValue.subscriber]
-          : [...result];
+        return result.find(
+          subscriber => subscriber.id === currentValue.subscriber_id,
+        )
+          ? result
+          : [...result, currentValue.subscriber];
       },
       [],
     );
@@ -112,10 +125,10 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
 
     const subscribers = subscribersGroup.reduce(
       (result: Subscriber[], currentValue: SubscribersGroup) => {
-        return result.some(
+        return result.find(
           subscriber => subscriber.id === currentValue.subscriber_id,
         )
-          ? [...result]
+          ? result
           : [...result, currentValue.subscriber];
       },
       [],
@@ -138,8 +151,39 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
     return subscription;
   }
 
-  public async import(data: ICreateSubscriberGroupDTO[]): Promise<void> {
-    const subscribers = this.ormRepository.create(data);
+  public async import(
+    data: ICreateSubscriberGroupDTO[],
+    group_id: string,
+  ): Promise<void> {
+    const subscribersIds = data.map(e => e.subscriber_id);
+    const subscriptionsAlreadyCreated = await this.ormRepository.find({
+      where: {
+        group_id,
+        subscriber_id: In(subscribersIds),
+      },
+    });
+
+    if (subscriptionsAlreadyCreated.length) {
+      await this.ormRepository.save(
+        subscriptionsAlreadyCreated.map(e => {
+          return {
+            ...e,
+            subscription_status: true,
+          };
+        }),
+      );
+    }
+
+    const subscriptionsToCreate = subscriptionsAlreadyCreated.length
+      ? data.filter(
+          originalData =>
+            !subscriptionsAlreadyCreated.some(
+              exist => exist.subscriber_id === originalData.subscriber_id,
+            ),
+        )
+      : data;
+
+    const subscribers = this.ormRepository.create(subscriptionsToCreate);
 
     await this.ormRepository.save(subscribers);
   }

@@ -17,7 +17,7 @@ export default class CreateDistributionService {
   public async execute({ groupId }: IRequest): Promise<Subscriber[]> {
     const subscribers = await this.subscribersGroupRepository.findAllSubscribersByGroup(
       groupId,
-      false,
+      true,
     );
 
     if (!subscribers) {

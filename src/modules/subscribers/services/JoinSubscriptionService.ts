@@ -30,11 +30,21 @@ export default class JoinSubscriptionService {
     if (emailAlreadyUsed) {
       emailAlreadyUsed.subscription_status = true;
       await this.subscriberRepository.save(emailAlreadyUsed);
-      this.subscribersGroupRepository.create({
-        group_id: groupId,
-        subscriber_id: emailAlreadyUsed.id,
-        subscrition_status: true,
-      });
+      const subscription = await this.subscribersGroupRepository.findByIdAndGroupId(
+        emailAlreadyUsed.id,
+        groupId,
+      );
+      if (!subscription) {
+        await this.subscribersGroupRepository.create({
+          group_id: groupId,
+          subscriber_id: emailAlreadyUsed.id,
+          subscription_status: true,
+        });
+        return emailAlreadyUsed;
+      }
+      subscription.subscription_status = true;
+      await this.subscribersGroupRepository.save(subscription);
+
       return emailAlreadyUsed;
     }
     const subscriber = await this.subscriberRepository.create({
@@ -46,7 +56,7 @@ export default class JoinSubscriptionService {
     this.subscribersGroupRepository.create({
       group_id: groupId,
       subscriber_id: subscriber.id,
-      subscrition_status: true,
+      subscription_status: true,
     });
 
     return subscriber;
