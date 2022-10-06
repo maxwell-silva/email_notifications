@@ -48,7 +48,7 @@ export default class ProcessQueueService {
 
       const defaultVariables = {
         name: contact.name,
-        link: `http://api.ld1.be/subscription/leave?dist=${distributionId}&id=${id}`,
+        link: `http://api.ld1.be/prd/subscription/leave?dist=${distributionId}&id=${id}`,
       };
 
       try {
