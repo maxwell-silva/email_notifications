@@ -105,6 +105,7 @@ export default class CreateDistributionService {
         subscriber_id: e.id,
         subscription_status: true,
       })),
+      groupId,
     );
   }
 }

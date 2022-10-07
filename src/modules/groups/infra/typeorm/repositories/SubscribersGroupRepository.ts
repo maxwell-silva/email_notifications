@@ -110,9 +110,7 @@ class SubscribersGroupRepository implements ISubscribersGroupRepository {
       [],
     );
 
-    const reponseData = subscribers.filter(e => e);
-
-    return reponseData;
+    return subscribers;
   }
 
   public async findAllSubscribersByIdGroups(
